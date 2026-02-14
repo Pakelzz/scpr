@@ -2,7 +2,7 @@ use std::{collections::HashMap, fs, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
-use crate::{date, error::MyError, model::{Pray, Schedule, ScheduleResponse}};
+use crate::{app::next, date, error::MyError, model::{Pray, Schedule, ScheduleResponse}};
 
 
 #[derive(Debug, Deserialize, Serialize, Default)]
@@ -51,7 +51,7 @@ pub fn write_config(schedule: ScheduleResponse) -> Result<(), MyError> {
     Ok(())
 }
 
-pub fn read_config() -> Result<(), MyError> {
+pub fn read_config(cli_next: bool) -> Result<(), MyError> {
     if let Some(mut conf) = dirs::config_dir() {
         conf.push("scpr/scpr.json");
         if !conf.exists() {
@@ -65,7 +65,11 @@ pub fn read_config() -> Result<(), MyError> {
             };
             if let Some(sche) = config.jadwal.get(&date::now()) {
                 pray.fill_schedule(sche, date::now());
-                pray.print_schedule();
+                if cli_next {
+                    println!("{}", next(pray));
+                } else {
+                    pray.print_schedule();
+                }
             } else {
                 return Err(MyError::ConfigOutOfDate);
             }

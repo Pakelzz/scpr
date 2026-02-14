@@ -51,7 +51,7 @@ pub struct Pray {
 
 impl Pray {
     pub fn print_schedule(&self) {
-        println!("Jadwal Sholat untuk {}, {}", self.kabko, self.date);
+        println!("Prayer schedule for {}, {}", self.kabko, self.date);
         println!("Subuh: {}", self.subuh);
         println!("Dzuhur: {}", self.dzuhur);
         println!("Ashar: {}", self.ashar);
@@ -67,4 +67,5 @@ impl Pray {
         self.maghrib = schedule.maghrib.clone();
         self.isya = schedule.isya.clone();
     }
+
 }

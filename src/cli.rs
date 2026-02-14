@@ -15,4 +15,7 @@ pub struct Cli {
     /// Example: scpr surabaya --date 2026-06-12
     #[arg(long)]
     pub date: Option<String>,
+
+    #[arg(short)]
+    pub next: bool
 }

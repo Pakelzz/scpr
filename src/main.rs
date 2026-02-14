@@ -9,7 +9,7 @@ mod cli;
 mod date;
 mod validation;
 mod storage;
-
+mod app;
 
 #[tokio::main]
 async fn main() {
@@ -85,7 +85,7 @@ async fn main() {
             Err(e) => eprintln!("{e}")
         } 
     } else {
-        match read_config() {
+        match read_config(cli.next) {
             Ok(()) => {},
             Err(e) => {
                 match e {
@@ -101,7 +101,7 @@ async fn main() {
                             Ok(s) => {
                                 match write_config(s) {
                                     Ok(()) => {
-                                        match read_config() {
+                                        match read_config(cli.next) {
                                             Ok(()) => {},
                                             Err(e) => eprintln!("{e}")
                                         }
