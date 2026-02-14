@@ -17,25 +17,25 @@ pub fn next(pray: Pray) -> String {
         let mut parts = i.split(':');
         let hour = parts.next().unwrap().parse::<u32>().unwrap();
         let minute = parts.next().unwrap().parse::<u32>().unwrap();
-        let clock = format!("{}{}", hour, minute).parse::<u32>().unwrap();
+        let clock = format!("{}{:02}", hour, minute).parse::<u32>().unwrap();
 
         if clock_int < clock {
             break;
-        }
+        } 
         count += 1;
     }
     
     let result;
-    if count == 1 {
-        result = format!("Subuh: {}", vec_pray[0]);
-    } else if count == 2 {
+    if count == 2 {
         result = format!("Dzuhur: {}", vec_pray[1]);
     } else if count == 3 {
         result = format!("Ashar: {}", vec_pray[2]);
     } else if count == 4 {
         result = format!("Maghrib: {}", vec_pray[3]);
-    } else {
+    } else if count == 5 {
         result = format!("Isya: {}", vec_pray[4]);
+    } else {
+        result = format!("Subuh: {}", vec_pray[0]);
     }
 
     result.to_string()
