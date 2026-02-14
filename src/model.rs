@@ -52,11 +52,11 @@ pub struct Pray {
 impl Pray {
     pub fn print_schedule(&self) {
         println!("Prayer schedule for {}, {}", self.kabko, self.date);
-        println!("Subuh: {}", self.subuh);
-        println!("Dzuhur: {}", self.dzuhur);
-        println!("Ashar: {}", self.ashar);
-        println!("Magrib: {}", self.maghrib);
-        println!("Isya: {}", self.isya);
+        println!("Subuh\t{}", self.subuh);
+        println!("Dzuhur\t{}", self.dzuhur);
+        println!("Ashar\t{}", self.ashar);
+        println!("Magrib\t{}", self.maghrib);
+        println!("Isya\t{}", self.isya);
     }
 
     pub fn fill_schedule(&mut self, schedule: &Schedule, date: String) {

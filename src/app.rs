@@ -27,15 +27,15 @@ pub fn next(pray: Pray) -> String {
     
     let result;
     if count == 2 {
-        result = format!("Dzuhur: {}", vec_pray[1]);
+        result = format!("Dzuhur {}", vec_pray[1]);
     } else if count == 3 {
-        result = format!("Ashar: {}", vec_pray[2]);
+        result = format!("Ashar {}", vec_pray[2]);
     } else if count == 4 {
-        result = format!("Maghrib: {}", vec_pray[3]);
+        result = format!("Maghrib {}", vec_pray[3]);
     } else if count == 5 {
-        result = format!("Isya: {}", vec_pray[4]);
+        result = format!("Isya {}", vec_pray[4]);
     } else {
-        result = format!("Subuh: {}", vec_pray[0]);
+        result = format!("Subuh {}", vec_pray[0]);
     }
 
     result.to_string()
