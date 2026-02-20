@@ -3,7 +3,7 @@ use clap::Parser;
 #[derive(Parser)]
 #[command(version, about, long_about)]
 pub struct Cli {
-    /// Name of city 
+    /// Name of city
     pub name: Option<String>,
 
     /// Make city default
@@ -18,5 +18,5 @@ pub struct Cli {
 
     /// Display next pray
     #[arg(short)]
-    pub next: bool
+    pub next: bool,
 }

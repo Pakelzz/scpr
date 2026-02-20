@@ -1,18 +1,11 @@
 use crate::{date::clock_int, model::Pray};
 
-
 pub fn next(pray: Pray) -> String {
-    let vec_pray = [
-        pray.subuh,
-        pray.dzuhur,
-        pray.ashar,
-        pray.maghrib,
-        pray.isya
-    ];
+    let vec_pray = [pray.subuh, pray.dzuhur, pray.ashar, pray.maghrib, pray.isya];
 
     let clock_int = clock_int();
     let mut count = 1;
-    
+
     for i in &vec_pray {
         let mut parts = i.split(':');
         let hour = parts.next().unwrap().parse::<u32>().unwrap();
@@ -21,10 +14,10 @@ pub fn next(pray: Pray) -> String {
 
         if clock_int < clock {
             break;
-        } 
+        }
         count += 1;
     }
-    
+
     let result;
     if count == 2 {
         result = format!("Dzuhur {}", vec_pray[1]);
