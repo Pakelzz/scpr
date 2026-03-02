@@ -1,4 +1,4 @@
-use crate::{date::clock_int, model::Pray};
+use crate::{api, cli::Cli, date::{self, clock_int}, error::MyError, model::Pray, storage::{read_config, write_config}};
 
 pub fn next(pray: Pray) -> String {
     let vec_pray = [pray.subuh, pray.dzuhur, pray.ashar, pray.maghrib, pray.isya];
@@ -34,18 +34,107 @@ pub fn next(pray: Pray) -> String {
     result.to_string()
 }
 
-#[test]
-fn test_next() {
-    let pray = Pray {
-        kabko: "KAB. Pasuruan".to_string(),
-        date: "14/02/2026".to_string(),
-        subuh: "04:13".to_string(),
-        dzuhur: "11:46".to_string(),
-        ashar: "14:58".to_string(),
-        maghrib: "17:57".to_string(),
-        isya: "19:08".to_string(),
-    };
-    pray.print_schedule();
-    println!("\nNext pray");
-    println!("{}", next(pray));
+pub async fn run(cli: Cli) {
+    if let Some(name) = &cli.name
+        && let Some(date) = cli.date
+    {
+        let res = api::get_id(name).await;
+        match res {
+            Ok(id) => {
+                
+                if cli.default {
+                    let res_month = api::get_schedule_month(
+                        &id,
+                        date::now())
+                        .await;
+                    match res_month {
+                        Ok(s) => {
+                            match write_config(s) {
+                                Ok(()) => {},
+                                Err(e) => eprintln!("{e}")
+                            }
+                        },
+                        Err(e) => eprintln!("{e}")
+                    }
+                }
+
+                let res = api::get_schedule_time(&id, &date).await;
+                match res {
+                    Ok(pray) => {
+                        pray.print_schedule();
+                    },
+                    Err(e) => {
+                        eprintln!("{e}");
+                        std::process::exit(1);
+                    }
+                }
+            },
+            Err(e) => eprintln!("{e}")
+        }
+    } else if let Some(city) = &cli.name {
+        let res = api::get_id(city).await;
+        match res {
+            Ok(id) => {
+                if cli.default {
+                    let res_month = api::get_schedule_month(
+                        &id,
+                        date::now())
+                        .await;
+                    match res_month {
+                        Ok(s) => {
+                            match write_config(s) {
+                                Ok(()) => {},
+                                Err(e) => eprintln!("{e}")
+                            }
+                        },
+                        Err(e) => eprintln!("{e}")
+                    }
+                }
+
+                let res = api::get_schedule_today(&id).await;
+                match res {
+                    Ok(pray) => {
+                        pray.print_schedule();
+                    },
+                    Err(e) => {
+                        eprintln!("{e}");
+                        std::process::exit(1);
+                    }
+                }
+            },
+            Err(e) => eprintln!("{e}")
+        } 
+    } else {
+        match read_config(cli.next) {
+            Ok(()) => {},
+            Err(e) => {
+                match e {
+                    MyError::ConfigOutOfDate => {
+                        let id = api::get_id_local().unwrap();
+                        let res_month = api::get_schedule_month(
+                            &id,
+                            date::now()
+                        )
+                            .await;
+
+                        match res_month {
+                            Ok(s) => {
+                                match write_config(s) {
+                                    Ok(()) => {
+                                        match read_config(cli.next) {
+                                            Ok(()) => {},
+                                            Err(e) => eprintln!("{e}")
+                                        }
+                                    },
+                                    Err(e) => eprintln!("{e}")
+                                }
+                            },
+                            Err(e) => eprintln!("{e}")
+                        }
+                    },
+                    _ => eprintln!("{e}")
+                }
+            }
+        }
+    }
 }
