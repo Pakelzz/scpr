@@ -51,7 +51,11 @@ pub struct Pray {
 
 impl Pray {
     pub fn print_schedule(&self) {
-        println!("Prayer schedule for {}, {}", self.kabko, self.date);
+        println!();
+        println!("Location: {}", self.kabko);
+        println!("Date: {}", self.date);
+        println!();
+
         println!("Subuh\t{}", self.subuh);
         println!("Dzuhur\t{}", self.dzuhur);
         println!("Ashar\t{}", self.ashar);
