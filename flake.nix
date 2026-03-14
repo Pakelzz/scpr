@@ -1,38 +1,57 @@
 {
-  description = "My Project";
+  description = "Rust project";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    rust-overlay.url = "github:oxalica/rust-overlay";
+
+    crane.url = "github:ipetkov/crane";
+
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, rust-overlay }:
-  let 
+  outputs = { self, nixpkgs, crane, fenix }:
+  let
     system = "x86_64-linux";
-    overlays = [
-      rust-overlay.overlays.default
-    ];
-    pkgs = import nixpkgs { inherit system overlays; };
-  in {
-    devShells.${system} = {
-      default = pkgs.mkShell {
-        packages = with pkgs; [
-          openssl
-          pkg-config
-          gcc
-          (rust-bin.stable.latest.default.override {
-            extensions = [ "rust-src" ];
-            targets = [ "x86_64-unknown-linux-musl" ];
-          })
-        ];
 
-        shellHook = ''
-          if [ -f .env ]; then
-            set -a
-            source .env
-            set +a
-          fi
-        '';
-      };
+    pkgs = import nixpkgs {
+      inherit system;
     };
+
+    toolchain = import ./nix/toolchain.nix {
+      inherit fenix system;
+    };
+
+    craneLib = import ./nix/crane.nix {
+      inherit pkgs crane toolchain;
+    };
+
+    src = craneLib.cleanCargoSource ./.;
+
+    cargoArtifacts = craneLib.buildDepsOnly {
+      inherit src;
+    };
+
+    package = craneLib.buildPackage {
+      inherit src cargoArtifacts;
+      pname = "scpr";
+      version = "0.1.0";
+    };
+
+  in {
+
+    packages.${system}.default = package;
+
+    overlays.default = final: prev: {
+      scpr = package;
+    };
+
+    devShells.${system}.default =
+      import ./nix/devshell.nix {
+        inherit pkgs toolchain;
+      };
+
   };
 }
