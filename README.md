@@ -10,7 +10,17 @@ Project ini dibuat untuk kebutuhan pribadi dan sebagai sarana belajar pengembang
 - Dapat diinstall melalui Nix Flakes
 
 ## Installation
-Saat ini `scpr` hanya dapat diinstall melalui Nix Flake overlay.
+
+### Debian-based systems
+
+Download the `.deb` package from this release and install:
+
+```bash
+sudo dpkg -i scpr_0.1.0_amd64.deb
+```
+
+### Nix Flakes
+Tambahkan `scpr` ke dalam input `flake.nix`
 
 Contoh penggunaan dalam `flake.nix`:
 
