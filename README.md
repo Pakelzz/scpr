@@ -13,7 +13,7 @@ Project ini dibuat untuk kebutuhan pribadi dan sebagai sarana belajar pengembang
 
 ### Debian-based systems
 
-Download the `.deb` package from this release and install:
+Download `.deb` package dari [release](https://github.com/Pakelzz/scpr/releases/tag/v0.1.0) kemudian:
 
 ```bash
 sudo dpkg -i scpr_0.1.0_amd64.deb
